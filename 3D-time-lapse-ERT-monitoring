@@ -12,7 +12,7 @@
 % pile. Part I loads geoelectrical database from Excel files and
 % pre-processes the measures. Files of data are created to be inversed with
 % E4D (Johnson, 2010). Part II loads inversion files and post-processes the
-% geophysical images of the waste rock pile overt time in 3D. 1D, 2D, 3D
+% geophysical images of the waste rock pile over time in 3D. 1D, 2D, 3D
 % and 4D images are generated from the inversion and geoelectrical data are
 % compared to hydrogeophysical measurements.
 %

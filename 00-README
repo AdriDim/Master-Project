@@ -14,10 +14,13 @@ This Matlab code was designed to create a 3D model of the waste rock pile for th
 ## 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)
 This Matlab code was designed to process 3D geoelectrical database of the experimental waste rock pile to RES2DINV and RES3DINV inversion software. Both surface and borehole electrodes are used for meausurements with standard and optimized protocols. 2D and 3D txt files are created for 2D and 3D inversion with user-selected protocols.
 
-## 04- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
+## 04- 3D-vizualisation-of-RES3DINV-inversion-results (638 lines)
+This Matlab code was used to load inversion results from RES3DINV inversion software and provide 3D vizualisations of resistivity and sensitivity distribution. Several tools are provided to the user to identify the best 3D vizualisations of the data. 
+
+## 05- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
 This Matlab code was used to select optimized protocols for the geoelectrical monitoring of the experimental waste rock pile. The methodology follows the example of the 'COMPARE R' method developed by the British Geological Survey (Stummer et al., 2004; Wilkinson et al., 2006b, 2012; Loke et al.,2014a, 2014b, 2015). Optimized protocols with 1000 configurations provide better coverage and senstivities than standard protocols of 4000 configurations. This Matlab code can be used for any 3D electrode distribution and the number of configurations can be selected by the user. 3D vizualisations of the optimized protocol sensitivies are used to assess the quality of the selected protocols.
 
-## 05- Optimized-protocols-for-ABEM-Terrameter-LS (2158 lines)
+## 06- Optimized-protocols-for-ABEM-Terrameter-LS (2158 lines)
 This Matlab code was used to select optimized protocols for any Electrical Resistivity Tomography measurements with surface electrodes in 1D or 2D grids (regular or not). The optimized protocols are identified following the methodology of the 'COMPARE R' method developed by the  British Geological Survey (Stummer et al., 2004; Wilkinson et al., 2006b,  2012; Loke et al.,2014a, 2014b, 2015). Optimized protocols provide better resolution and coverage compared to standard protocols and they need less acquisition time. The Matlab code automatically generates .xml files to upload the optimized protocols on the Terramter LS (ABEM) which can be completed by one or more ES1064C electrode selecter (ABEM).
 
 ## 01- 3D-time-lapse-ERT-monitoring (5220 lines)

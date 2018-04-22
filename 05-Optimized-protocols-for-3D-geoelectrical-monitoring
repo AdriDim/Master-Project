@@ -16,7 +16,7 @@
 % 1000 configurations provide better coverage and senstivities than
 % standard protocols of 4000 configurations. This Matlab code can be used
 % for any 3D electrode distribution and the number of configurations can be
-% selected by the user. 3D vizualisations of the optimized protocol
+% selected by the user. 3D visualizations of the optimized protocol
 % sensitivies are used to assess the quality of the selected protocols.
 %
 % Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech

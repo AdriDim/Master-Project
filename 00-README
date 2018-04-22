@@ -5,6 +5,15 @@ Matlab codes to prepare - process - visualize and interpret 3D time-lapse geolel
 Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more information about my research or contact me for more information and data files : adrien.dimech@gmail.com
 ----------------------------------------------------------------------------------------------------------------------------------------
 
+%% Content of this repository :
+- 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
+- 02- 3D-modeling-of-the-pile-for-COMSOL (1172 lines)
+- 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)
+- 04- 3D-vizualisation-of-RES3DINV-inversion-results (293 lines)
+- 05- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
+- 06- Optimized-protocols-for-ABEM-Terrameter-LS (2158 lines)
+
+
 ## 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
 This Matlab code was designed to use surveying of the pile to create a complex 3D model of the pile with both external topography and internal structure and instrumentation positions. The 3D model is used to provide better inversion results for the 3D time-lapse geoelectrical monitoring of the experimental waste rock pile.
 
@@ -14,7 +23,7 @@ This Matlab code was designed to create a 3D model of the waste rock pile for th
 ## 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)
 This Matlab code was designed to process 3D geoelectrical database of the experimental waste rock pile to RES2DINV and RES3DINV inversion software. Both surface and borehole electrodes are used for meausurements with standard and optimized protocols. 2D and 3D txt files are created for 2D and 3D inversion with user-selected protocols.
 
-## 04- 3D-vizualisation-of-RES3DINV-inversion-results (638 lines)
+## 04- 3D-vizualisation-of-RES3DINV-inversion-results (293 lines)
 This Matlab code was used to load inversion results from RES3DINV inversion software and provide 3D vizualisations of resistivity and sensitivity distribution. Several tools are provided to the user to identify the best 3D vizualisations of the data. 
 
 ## 05- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)

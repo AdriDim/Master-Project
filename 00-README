@@ -5,7 +5,7 @@ Matlab codes to prepare - process - visualize and interpret 3D time-lapse geolel
 Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more information about my research or contact me for more information and data files : adrien.dimech@gmail.com
 ----------------------------------------------------------------------------------------------------------------------------------------
 
-%% Content of this repository :
+## Content of this repository :
 - 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
 - 02- 3D-modeling-of-the-pile-for-COMSOL (1172 lines)
 - 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)

@@ -1,9 +1,9 @@
 # Master-Project | Adrien-Dimech | Hydrogeophysics
-------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 Matlab codes to prepare - process - visualize and interpret 3D time-lapse geolelectrical monitoring of a waste rock pile.
 
 Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more information about my research or contact me for more information and data files : adrien.dimech@gmail.com
-------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
 
 ## 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
 This Matlab code was designed to use surveying of the pile to create a complex 3D model of the pile with both external topography and internal structure and instrumentation positions. The 3D model is used to provide better inversion results for the 3D time-lapse geoelectrical monitoring of the experimental waste rock pile.
@@ -14,7 +14,8 @@ This Matlab code was designed to create a 3D model of the waste rock pile for th
 ## 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)
 This Matlab code was designed to process 3D geoelectrical database of the experimental waste rock pile to RES2DINV and RES3DINV inversion software. Both surface and borehole electrodes are used for meausurements with standard and optimized protocols. 2D and 3D txt files are created for 2D and 3D inversion with user-selected protocols.
 
-## 04- Optimized-protocols-for-3D-geoelectrical-monitoring
+## 04- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
+This Matlab code was used to select optimized protocols for the geoelectrical monitoring of the experimental waste rock pile. The methodology follows the example of the 'COMPARE R' method developed by the British Geological Survey (Stummer et al., 2004; Wilkinson et al., 2006b, 2012; Loke et al.,2014a, 2014b, 2015). Optimized protocols with 1000 configurations provide better coverage and senstivities than standard protocols of 4000 configurations. This Matlab code can be used for any 3D electrode distribution and the number of configurations can be selected by the user. 3D vizualisations of the optimized protocol sensitivies are used to assess the quality of the selected protocols.
 
 ## 01- 3D-time-lapse-ERT-monitoring (5220 lines)
 This Matlab code was designed to process inversion results (E4D) of the 3D time-lapse geoelectrical monitoring of an experimental waste rock pile. Part I loads geoelectrical database from Excel files and pre-processes the measures. Files of data are created to be inversed with E4D (Johnson, 2010). Part II loads inversion files and post-processes the geophysical images of the waste rock pile overt time in 3D. 1D, 2D, 3D and 4D images are generated from the inversion and geoelectrical data are compared to hydrogeophysical measurements.

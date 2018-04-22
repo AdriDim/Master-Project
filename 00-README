@@ -13,7 +13,8 @@ Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more
 - 05- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
 - 06- Optimized-protocols-for-ABEM-Terrameter-LS (2158 lines)
 - 07- Hydrogeological-database-processing (988 lines)
-
+- 08- 3D-modeling-of-the-pile-for-E4D (694 lines)
+- 09- 3D-time-lapse-ERT-monitoring (5220 lines)
 
 ## 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
 This Matlab code was designed to use surveying of the pile to create a complex 3D model of the pile with both external topography and internal structure and instrumentation positions. The 3D model is used to provide better inversion results for the 3D time-lapse geoelectrical monitoring of the experimental waste rock pile.
@@ -36,8 +37,9 @@ This Matlab code was used to select optimized protocols for any Electrical Resis
 ## 07- Hydrogeological-database-processing (988 lines)
 This Matlab code was used to load and process the hydrogeological database measured in the experimental waste rock pile. Both GS3 and MPS sensors are used (Decagon Devices) to monitor water content, temperature, resistivity and suction in the waste rock. Precipitation data are also processed. This code provide useful tools to handle complexe database and to visualize different datasets. Hydrogeological data are then used as a validation of geoelectrical results.
 
-## 01- 3D-time-lapse-ERT-monitoring (5220 lines)
+## 08- 3D-modeling-of-the-pile-for-E4D (694 lines)
+This Matlab code was used to load surveying data to create a complex 3D model for the inversion software E4D (Johnson, 2010). The 3D tetrahedron mesh is generated with Tetgen. This code provides 3D visualization of the different geometries and structure you wish to model with Tetgen and helps verifying the consistency of the model to find meshes errors for instance. Some useful tools are also provided to complement and interpolate surveying datasets. 
+
+## 09- 3D-time-lapse-ERT-monitoring (5220 lines)
 This Matlab code was designed to process inversion results (E4D) of the 3D time-lapse geoelectrical monitoring of an experimental waste rock pile. Part I loads geoelectrical database from Excel files and pre-processes the measures. Files of data are created to be inversed with E4D (Johnson, 2010). Part II loads inversion files and post-processes the geophysical images of the waste rock pile overt time in 3D. 1D, 2D, 3D and 4D images are generated from the inversion and geoelectrical data are compared to hydrogeophysical measurements.
 
-
-## 01- 

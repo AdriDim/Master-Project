@@ -10,8 +10,9 @@
 % This Matlab code was designed to use surveying of the pile to create a
 % complex 3D model of the pile with both external topography and internal
 % structure and instrumentation positions. The 3D model is used to provide
-% better inversion results.
-%
+% better inversion results for the 3D time-lapse geoelectrical monitoring.
+% of the experimental waste rock pile.
+% 
 % Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech
 % for more information about my research or contact me for more information
 % and data files : adrien.dimech@gmail.com

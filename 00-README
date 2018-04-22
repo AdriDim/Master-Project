@@ -12,3 +12,6 @@ This Matlab code was designed to process 3D geoelectrical database of the experi
 
 ## 3D-modeling-of-the-waste-rock-pile (476 lines)
 This Matlab code was designed to use surveying of the pile to create a complex 3D model of the pile with both external topography and internal structure and instrumentation positions. The 3D model is used to provide better inversion results for the 3D time-lapse geoelectrical monitoring of the experimental waste rock pile.
+
+## 3D-modeling-of-the-pile-for-COMSOL
+This Matlab code was designed to create a 3D model of the waste rock pile for the COMSOL Multiphysics modelisation software. External topography and internal structure was used to calculate geometric factors for both standard and optimized protocols. The approach developped to model the pile can be applied to any complex structure to generate a complex 3D high-resolution model for COMSOL Multiphysics with LiveLink for Matlab.

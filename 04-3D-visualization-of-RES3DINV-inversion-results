@@ -1,4 +1,4 @@
-%% ----------- 3D-vizualisation-of-RES3DINV-inversion-results -------------
+%% ----------- 3D-visualization-of-RES3DINV-inversion-results -------------
 %
 % Adrien Dimech - Master Project - 22/04/2018
 %
@@ -8,9 +8,9 @@
 % -------------------------------------------------------------------------
 %
 % This Matlab code was used to load inversion results from RES3DINV
-% inversion software and provide 3D vizualisations of resistivity and
+% inversion software and provide 3D visualizations of resistivity and
 % sensitivity distribution. Several tools are provided to the user to
-% identify the best 3D vizualisations of the data. 
+% identify the best 3D visualizations of the data. 
 %
 % Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech
 % for more information about my research or contact me for more information

@@ -6,12 +6,20 @@ Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more
 ----------------------------------------------------------------------------------------------------------------------------------------
 
 ## Content of this repository :
+
+-> Preliminary approach
 - 01- 3D-modeling-of-the-waste-rock-pile (476 lines)
 - 02- 3D-modeling-of-the-pile-for-COMSOL (1172 lines)
+
+-> Static measurements (2016)
 - 03- 3D-geoelectrical-database-to-RES2D\3DINV (638 lines)
 - 04- 3D-visualization-of-RES3DINV-inversion-results (293 lines)
+
+-> dynamica measurements (2017)
 - 05- Optimized-protocols-for-3D-geoelectrical-monitoring (1278 lines)
 - 06- Optimized-protocols-for-ABEM-Terrameter-LS (2158 lines)
+
+-> Data processing and inversions
 - 07- Hydrogeological-database-processing (988 lines)
 - 08- 3D-modeling-of-the-pile-for-E4D (694 lines)
 - 09- 3D-time-lapse-ERT-monitoring (5220 lines)

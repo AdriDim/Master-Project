@@ -16,27 +16,10 @@
  for more information about my research or contact me for more information
  and data files : adrien.dimech@gmail.com
  
-                           Suivi du code
- -------------------------------------------------------------------------
- Creation          |       01/10/2016        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       09/11/2016        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       17/11/2016        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       25/01/2017        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       31/01/2017        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       03/02/2017        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       07/02/2017        |     Adrien Dimech
- -------------------------------------------------------------------------
- Modification      |       13/02/2017        |     Adrien Dimech
- -------------------------------------------------------------------------
 
 ## 0.1) Rotation des donneés brutes
- Creation le 17/11/2016
+Creation le 17/11/2016
+ 
 actif=0;
 for o=1:1 % non utilisé : Rotation des données
     if actif==1

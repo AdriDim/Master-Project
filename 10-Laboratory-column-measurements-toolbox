@@ -1,0 +1,715 @@
+%% --------------- Laboratory-column-measurements-toolbox -----------------
+%
+% Adrien Dimech - Master Project - 01/05/2018
+%
+% -------------------------------------------------------------------------
+% Matlab codes to prepare - process - visualize and interpret 3D time-lapse 
+% geolelectrical monitoring of a waste rock pile.
+% -------------------------------------------------------------------------
+%
+% This Matlab code was used to carry laboratory column measurements with
+% rock samples from the experimental waste rock pile (sand, ilmenite and
+% anorthosite waste rocks). ERT monitoring of the column was used to
+% recover the relationship between bulk electrical resistivity, water
+% electrical resistivity and moisture content. These empirical
+% relationships are then used to calculate the moisture content
+% distribution in the waste rock pile from bulk electrical resistivity
+% monitoring.
+% 
+% Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech
+% for more information about my research or contact me for more information
+% and data files : adrien.dimech@gmail.com
+
+% MESURES DE COLONNE 3D
+% -------------------------------------------------------------------------
+%                           Code Logging
+% -------------------------------------------------------------------------
+% Creation          |       12/05/2017        |     Adrien Dimech
+% -------------------------------------------------------------------------
+% Modification      |       XX/XX/2017        |     Adrien Dimech
+
+%% I) GÉOMÉTRIE DE LA COLONNE
+%--------------------------------------------------------------------------
+for o=1
+    
+    % Définition de la matrice ELEC des coordonnées des électrodes
+    clear all
+    p = get(gcf,'Position');
+    set(0,'DefaultFigurePosition',p);
+    close all
+    
+    for o=1
+        ELEC=zeros(32,3);
+        X_MATRIX=[5,0,-5,0];
+        Y_MATRIX=[0,5,0,-5];
+        count=1;
+        for i=1:8
+            for j=1:4
+                ELEC(count,1:3)=[X_MATRIX(j),Y_MATRIX(j),90-(i-1)*10];
+                count=count+1;
+            end
+        end
+        ELEC_2=ELEC/100;
+        ELEC_3=ELEC_2;
+        ELEC_3(:,1)=ELEC_2(:,1)+(ELEC_2(:,1)<0)*0.0001-(ELEC_2(:,1)>0)*0.0001;
+        ELEC_3(:,2)=ELEC_2(:,2)+(ELEC_2(:,2)<0)*0.0001-(ELEC_2(:,2)>0)*0.0001;
+        
+        
+        % Représentation 3D de la colonne
+        figure('color',[1 1 1])
+        plot3(ELEC(:,1),ELEC(:,2),ELEC(:,3),'.k','MarkerSize',20)
+        hold on
+        
+        % Affichage des cercles permettant de comprendre la géométrie de la colonne
+        xCenter = 0;
+        yCenter = 0;
+        NbPoints=40;
+        theta = 0 : 2*pi/NbPoints : 2*pi-2*pi/NbPoints;
+        radius = 5;
+        x = radius * cos(theta) + xCenter;
+        y = radius * sin(theta) + yCenter;
+        for i=1:11
+            z=100-(i-1)*10*ones(length(x));
+            plot3(x, y,z,'k');
+        end
+        grid on;
+        
+        BORD=[x'/100,y'/100,ones(length(x'),1)];
+        BORD=[zeros(length(BORD(:,1)),1),BORD,ones(length(BORD(:,1)),1)*2];
+        for i=1:length(BORD(:,1))
+            BORD(i,1)=i;
+        end
+        BORD=round(BORD,5);
+        
+        daspect([1,1,1])
+        xlim([-10 10])
+        ylim([-10 10])
+        zlim([0 100])
+        for i=1:32
+            text(ELEC(i,1)+1,ELEC(i,2)-1,ELEC(i,3),num2str(i));
+        end
+    end
+    
+end
+
+%% II) PROTOCOLE DE MESURE DANS LA COLONNE
+%--------------------------------------------------------------------------
+for o=1
+    for o=1
+        clear DUOS_X_avant DUOS_X_arriere DUOS_Y_droite DUOS_Y_gauche
+        DUOS_X_avant=zeros(8,2);
+        DUOS_X_arriere=zeros(8,2);
+        DUOS_Y_droite=zeros(8,2);
+        DUOS_Y_gauche=zeros(8,2);
+        for i=1:8
+            DUOS_X_avant(i,1:2)=[(i-1)*4+3 (i-1)*4+4];
+            DUOS_X_arriere(i,1:2)=[(i-1)*4+1 (i-1)*4+2];
+            DUOS_Y_droite(i,1:2)=[(i-1)*4+1 (i-1)*4+4];
+            DUOS_Y_gauche(i,1:2)=[(i-1)*4+3 (i-1)*4+2];
+        end
+        
+        % Protocole en X
+        clear PROTOCOLE_X
+        PROTOCOLE_X(1,1:4)=[0,0,0,0];
+        for i=1:8
+            for j=i-2:1:i+2
+                if j>0 & j<9
+                    PROTOCOLE_X(end+1,1:4)=[DUOS_X_arriere(i,1:2),DUOS_X_avant(j,1:2)];
+                end
+            end
+        end
+        PROTOCOLE_X(1,:)=[];
+        
+        % Protocole en Y
+        clear PROTOCOLE_Y
+        PROTOCOLE_Y(1,1:4)=[0,0,0,0];
+        for i=1:8
+            for j=i-2:1:i+2
+                if j>0 & j<9
+                    PROTOCOLE_Y(end+1,1:4)=[DUOS_Y_droite(i,1:2),DUOS_Y_gauche(j,1:2)];
+                end
+            end
+        end
+        PROTOCOLE_Y(1,:)=[];
+        
+        % Protocole de colonne final
+        clear PROTOCOLE_COLONNE
+        PROTOCOLE_COLONNE=[PROTOCOLE_X;PROTOCOLE_Y];
+    end
+    
+    %% CHARGEMENT DES DONNÉES
+    for o=1
+        load PROTOCOLE_COLONNE.mat
+        load Colonnes.mat
+        T_CORR=0.21+1;
+        
+        % ABEM imagerie
+        FichierExcel = 'DATA_12.xlsx';
+        [~,b]=xlsfinfo(FichierExcel);
+        NbPages = length(b(1,:));
+        
+        % Enregistrement des donnees dans RAW_DATA
+        for i=1:NbPages
+            RAW_DATA{i} = xlsread(FichierExcel,i);
+        end
+        
+        
+        for i=1:NbPages
+            DATA1{i}=RAW_DATA{i}(:,Colonnes);
+            DATA1{i}(:,1)=DATA1{i}(:,1)-T_CORR;
+        end
+        
+        PROTOCOLE=PROTOCOLE_COLONNE/2;
+        % Configuration focus
+        CONFIG_FOCUS{1}=zeros(1,NbPages);
+        CONFIG_TOT=zeros(1,4);
+        count=0;
+        for i=1:NbPages
+            for j=1:length(DATA1{i}(:,1))
+                C1=DATA1{i}(j,2);
+                C2=DATA1{i}(j,3);
+                P1=DATA1{i}(j,4);
+                P2=DATA1{i}(j,5);
+                trouve=find(C1==CONFIG_TOT(:,1)&C2==CONFIG_TOT(:,2)&P1==CONFIG_TOT(:,3)&P2==CONFIG_TOT(:,4));
+                
+                if isempty(trouve)
+                    count=count+1;
+                    trouve=count;
+                    CONFIG_FOCUS{trouve}=zeros(1,10);
+                    CONFIG_TOT(trouve,1:4)=[C1,C2,P1,P2];
+                end
+                
+                CONFIG_FOCUS{trouve}(end+1,1:10)=DATA1{i}(j,:);
+                % 9 = R
+                % 10 = var R %
+                
+                % FACTEUR GEOMETRIQUE / RHO APP / VAR SUR RHO APP
+                trouve_2=find(C1==PROTOCOLE(:,1)&C2==PROTOCOLE(:,2)&P1==PROTOCOLE(:,3)&P2==PROTOCOLE(:,4));
+                if isempty(trouve_2)==0
+                    % facteur géométrique
+                    CONFIG_FOCUS{trouve}(end,11)=PROTOCOLE(trouve_2,5);
+                    % Resistivité apparente
+                    CONFIG_FOCUS{trouve}(end,12)=CONFIG_FOCUS{trouve}(end,9)*CONFIG_FOCUS{trouve}(end,11);
+                    % Variation sur Rho App
+                    CONFIG_FOCUS{trouve}(end,13)=CONFIG_FOCUS{trouve}(end,11)*CONFIG_FOCUS{trouve}(end,10);
+                else
+                    CONFIG_FOCUS{trouve}(end,11:13)=[0,0,0];
+                end
+                
+            end
+        end
+        
+        
+        % suppression des premieres lignes vierges
+        for i=1:length(CONFIG_FOCUS)
+            CONFIG_FOCUS{1,i}(1,:)=[];
+            CONFIG_FOCUS{1,i}(CONFIG_FOCUS{1,i}(:,6)==0,:)=[];
+        end
+        
+        % Filtrage des valeurs uniques
+        actif_elim=0;
+        if actif_elim==1
+            elimination=0;
+            for i=1:length(CONFIG_FOCUS)
+                if length(CONFIG_FOCUS{1,i}(:,1))<3
+                    elimination(end+1,1)=i;
+                end
+            end
+            elimination(1,:)=[];
+            elimination=sortrows(elimination,-1);
+            
+            for i=1:length(elimination(:,1))
+                CONFIG_FOCUS(:,elimination(i,1))=[];
+                CONFIG_TOT(elimination(i,1),:)=[];
+            end
+        end
+    end
+    
+    %% VISUALISATION DES DONNÉES BRUTES
+    actif=1;
+    affichage=0;
+    for o=1
+        if actif==1
+            p = get(gcf,'Position');
+            set(0,'DefaultFigurePosition',p);
+            
+            
+            close all
+            pas_de_temps=1/24;
+            formatOut1 = 'dd/mm';
+            formatOut2= 'dd/mm HH:MM AM';
+            formatOut3= 'HH:MM';
+            format=formatOut3;
+            
+            T_0=42997.5560069445;
+            T_MIN=min(CONFIG_FOCUS{1,1}(:,1));
+            T_MAX=max(CONFIG_FOCUS{1,1}(:,1));
+            for i=1:length(CONFIG_FOCUS)
+                if mean(CONFIG_FOCUS{1,i}(:,10))<100
+                    % FAUSSE DONNEES INTERP
+                    Interpolation_DATA{1,i}=[CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9)];
+                    if affichage==1
+                        figure('Color', [ 1 1 1])
+                    end
+                    %errorbar(CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3).*CONFIG_FOCUS{1,i}(:,10+(rho_app==1)*3)/100,'.--','LineWidth',1.5,'MarkerSize',15)
+                    %plot(CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3),'o--')
+                    plot(CONFIG_FOCUS{1,i}(:,1),(CONFIG_FOCUS{1,i}(:,9)),'.-k','LineWidth',2,'MarkerSize',25)
+                    hold on
+                    %errorbar(CONFIG_FOCUS{1,i}(:,1),(CONFIG_FOCUS{1,i}(:,9)),CONFIG_FOCUS{1,i}(:,10),'.','LineWidth',0.5,'Color','black','MarkerSize',0.25)
+                    
+                    
+                    %xlim([T_MIN T_MAX])
+                    ylabel({'Resistance mesurée avec ABEM';'(Ohm)'},'FontSize',14)
+                    %             %     yyaxis right
+                    %             %     plot(ARROSAGE(:,1),ARROSAGE(:,2),'.--','LineWidth',2,'MarkerSize',10)
+                    %             %     ylabel({'Arrosage de la halde';'(Nb de passage par heure)'},'FontSize',14)
+                    %             %     yyaxis left
+                    grid
+                    title(['Configuration n°',num2str(i),' : C1 = ',num2str(CONFIG_FOCUS{1,i}(1,2)),' ; C2 = ',num2str(CONFIG_FOCUS{1,i}(1,3)),' ; P1 = ',num2str(CONFIG_FOCUS{1,i}(1,4)),' ; P2 = ',num2str(CONFIG_FOCUS{1,i}(1,5))],'FontSize',16)
+                    xlabel({['Date (format : ',format,')']},'FontSize',14)
+                    grid minor
+                    ax = gca;
+                    ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+                    ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+                    grid minor
+                end
+                
+                
+            end
+        end
+    end
+    
+    %% SUPPRESSION DONNEES ABBERANTES
+    actif=0;
+    for o=1
+        if actif==1
+            
+            
+            c_info = getCursorInfo(datacursormode);
+            c_info.Position;
+            
+            
+            % Choix de la configuration
+            prompt = {sprintf('Quelle est la configuration étudiée ?')};
+            dlg_title = 'Choix Configuration';
+            num_lines = 1;
+            defaultans = {'0'};
+            Config = inputdlg(prompt,dlg_title,num_lines,defaultans);
+            Config = str2num(Config{:});
+            
+            for i=1:length(c_info)
+                ligne=find(CONFIG_FOCUS{Config}(:,1)==c_info(i).Position(1));
+                CONFIG_FOCUS{Config}(ligne,:)=[];
+            end
+            close
+            
+            for i=Config
+                if mean(CONFIG_FOCUS{1,i}(:,10))<100
+                    % FAUSSE DONNEES INTERP
+                    Interpolation_DATA{1,i}=[CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9)];
+                    figure('Color', [ 1 1 1])
+                    %errorbar(CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3).*CONFIG_FOCUS{1,i}(:,10+(rho_app==1)*3)/100,'.--','LineWidth',1.5,'MarkerSize',15)
+                    %plot(CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9+(rho_app==1)*3),'o--')
+                    plot(CONFIG_FOCUS{1,i}(:,1),(CONFIG_FOCUS{1,i}(:,9)),'.-k','LineWidth',2,'MarkerSize',25)
+                    hold on
+                    %errorbar(CONFIG_FOCUS{1,i}(:,1),(CONFIG_FOCUS{1,i}(:,9)),CONFIG_FOCUS{1,i}(:,10),'.','LineWidth',0.5,'Color','black','MarkerSize',0.25)
+                    
+                    
+                    %xlim([T_MIN T_MAX])
+                    ylabel({'Resistance mesurée avec ABEM';'(Ohm)'},'FontSize',14)
+                    %             %     yyaxis right
+                    %             %     plot(ARROSAGE(:,1),ARROSAGE(:,2),'.--','LineWidth',2,'MarkerSize',10)
+                    %             %     ylabel({'Arrosage de la halde';'(Nb de passage par heure)'},'FontSize',14)
+                    %             %     yyaxis left
+                    grid
+                    title(['Configuration n°',num2str(i),' : C1 = ',num2str(CONFIG_FOCUS{1,i}(1,2)),' ; C2 = ',num2str(CONFIG_FOCUS{1,i}(1,3)),' ; P1 = ',num2str(CONFIG_FOCUS{1,i}(1,4)),' ; P2 = ',num2str(CONFIG_FOCUS{1,i}(1,5))],'FontSize',16)
+                    xlabel({['Date (format : ',format,')']},'FontSize',14)
+                    grid minor
+                    ax = gca;
+                    ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+                    ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+                    grid minor
+                end
+                
+                
+            end
+        end
+    end
+    
+    %% VISUALISATION DES DONNÉES EN RÉSISTIVITÉ APPARENTES
+    actif=1;
+    affichage=0;
+    for o=1
+        if actif==1
+            close all
+            
+            load FACTEUR_GEOM_COL.mat
+            for i=1:length(CONFIG_FOCUS)
+                % K = colonne 11
+                ligne=find(FACTEUR_GEOM_COL(:,1)==CONFIG_FOCUS{1,i}(1,2)&FACTEUR_GEOM_COL(:,2)==CONFIG_FOCUS{1,i}(1,3)&FACTEUR_GEOM_COL(:,3)==CONFIG_FOCUS{1,i}(1,4)&FACTEUR_GEOM_COL(:,4)==CONFIG_FOCUS{1,i}(1,5));
+                CONFIG_FOCUS{1,i}(:,11)=ones(length(CONFIG_FOCUS{1,i}(:,11)),1)*FACTEUR_GEOM_COL(ligne,5);
+                % Rho = colonne 12
+                CONFIG_FOCUS{1,i}(:,12)=CONFIG_FOCUS{1,i}(:,9).*CONFIG_FOCUS{1,i}(:,11);
+            end
+            
+            for i=1:length(CONFIG_FOCUS)
+                if mean(CONFIG_FOCUS{1,i}(:,10))<100
+                    if affichage==1
+                        figure('Color', [ 1 1 1])
+                    end
+                    plot(CONFIG_FOCUS{1,i}(:,1),(CONFIG_FOCUS{1,i}(:,12)),'.-k','LineWidth',2,'MarkerSize',25)
+                    hold on
+                    ylabel({'Résistivité mesurée avec ABEM';'(Ohm.m)'},'FontSize',14)
+                    grid
+                    title(['Configuration n°',num2str(i),' : C1 = ',num2str(CONFIG_FOCUS{1,i}(1,2)),' ; C2 = ',num2str(CONFIG_FOCUS{1,i}(1,3)),' ; P1 = ',num2str(CONFIG_FOCUS{1,i}(1,4)),' ; P2 = ',num2str(CONFIG_FOCUS{1,i}(1,5))],'FontSize',16)
+                    xlabel({['Date (format : ',format,')']},'FontSize',14)
+                    grid minor
+                    ax = gca;
+                    ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+                    ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+                    grid minor
+                end
+            end
+        end
+    end
+    
+    %% VISUALISATION DES DONNÉES EN Z
+    actif=1;
+    for o=1
+        if actif==1
+            close all
+            load TYPE_1
+            figure('Color', [ 1 1 1])
+            for i=1:length(TYPE_1)
+                z=100-i*10;
+                config=0;
+                for j=1:length(CONFIG_FOCUS)
+                    if TYPE_1(i,1)==CONFIG_FOCUS{1,j}(1,2)&TYPE_1(i,2)==CONFIG_FOCUS{1,j}(1,3)&TYPE_1(i,3)==CONFIG_FOCUS{1,j}(1,4)&TYPE_1(i,4)==CONFIG_FOCUS{1,j}(1,5)
+                        config=j;
+                    end
+                end
+                if config>0
+                    plot(CONFIG_FOCUS{1,config}(:,1),(CONFIG_FOCUS{1,config}(:,12)),'.-','LineWidth',2,'MarkerSize',25,'DisplayName',['Z = ',num2str(z),' cm de hauteur'])
+                    %plot(CONFIG_FOCUS{1,config}(:,1),z+(CONFIG_FOCUS{1,config}(:,12))/5,'.-','LineWidth',2,'MarkerSize',25,'DisplayName',['Z = ',num2str(z),' cm de hauteur'])
+                end
+                hold on
+            end
+            legend show
+            ylabel({'Résistivité mesurée avec ABEM';'(Ohm.m)'},'FontSize',14)
+            grid
+            title('Résistivité apparentes mesurées dans la colonne pour différentes valeurs de conductivité électrique de fluide intersticiel','FontSize',16)
+            xlabel({['Date (format : ',format,')']},'FontSize',14)
+            grid minor
+            ax = gca;
+            ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+            ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+            
+        end
+    end
+    
+    %% VISUALISATION DES DONNÉES BRUTES TEMPS RELATIF
+    actif=0;
+    for o=1
+        if actif==1
+            p = get(gcf,'Position');
+            set(0,'DefaultFigurePosition',p);
+            
+            
+            close all
+            pas_de_temps=1/24;
+            formatOut1 = 'dd/mm';
+            formatOut2= 'dd/mm HH:MM AM';
+            formatOut3= 'HH:MM';
+            format=formatOut3;
+            
+            T_0=42997.5560;
+            T_MIN=min(CONFIG_FOCUS{1,1}(:,1));
+            T_MAX=max(CONFIG_FOCUS{1,1}(:,1));
+            CONFIG_FOCUS_2=CONFIG_FOCUS;
+            for i=1:length(CONFIG_FOCUS)
+                if mean(CONFIG_FOCUS_2{1,i}(:,10))<100
+                    figure('Color', [ 1 1 1])
+                    CONFIG_FOCUS_2{1,i}(:,1)=(CONFIG_FOCUS{1,i}(:,1)-T_0)*86400;
+                    CONFIG_FOCUS_2{1,i}(CONFIG_FOCUS_2{1,i}(:,1)<0,:)=[];
+                    semilogx(CONFIG_FOCUS_2{1,i}(:,1),(CONFIG_FOCUS_2{1,i}(:,9)),'.-k','LineWidth',2,'MarkerSize',25)
+                    hold on
+                    
+                    
+                    %xlim([T_MIN T_MAX])
+                    ylabel({'Resistance mesurée avec ABEM';'(Ohm)'},'FontSize',14)
+                    %             %     yyaxis right
+                    %             %     plot(ARROSAGE(:,1),ARROSAGE(:,2),'.--','LineWidth',2,'MarkerSize',10)
+                    %             %     ylabel({'Arrosage de la halde';'(Nb de passage par heure)'},'FontSize',14)
+                    %             %     yyaxis left
+                    grid
+                    title(['Configuration n°',num2str(i),' : C1 = ',num2str(CONFIG_FOCUS{1,i}(1,2)),' ; C2 = ',num2str(CONFIG_FOCUS{1,i}(1,3)),' ; P1 = ',num2str(CONFIG_FOCUS{1,i}(1,4)),' ; P2 = ',num2str(CONFIG_FOCUS{1,i}(1,5))],'FontSize',16)
+                    xlabel({['Temps écoulé depuis le début de l"expérience (secondes)']},'FontSize',14)
+                    grid minor
+                    %             ax = gca;
+                    %             ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+                    %             ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+                    %             grid minor
+                end
+                
+                
+            end
+        end
+    end
+    
+    %% Simplification des courbes
+    actif=0;
+    for o=1
+        if actif==1
+            clear User_Points
+            Nb_User_Points=20;
+            for i=1:Nb_User_Points
+                User_Points(i,1:2)=ginput(1);
+                User_Points=sortrows(User_Points,1);
+                plot(User_Points(:,1),User_Points(:,2),'.-r','MarkerSize',15,'LineWidth',2)
+            end
+            % Choix de la configuration
+            prompt = {sprintf('Quelle est la configuration étudiée ?')};
+            dlg_title = 'Choix Configuration';
+            num_lines = 1;
+            defaultans = {'0'};
+            Config = inputdlg(prompt,dlg_title,num_lines,defaultans);
+            Config = str2num(Config{:});
+            Interpolation_DATA{Config}=User_Points;
+            a=Interpolation_DATA;
+        end
+    end
+    
+    %% Rédaction de la matrice de données interpolées
+    actif=0;
+    for o=1
+        if actif==1
+            
+            close all
+            formatOut2= 'HH:MM AM';
+            format=formatOut2;
+            pas_de_temps=1/60/24;
+            %         load Interpolation_DATA.mat
+            %         load Interpolation_DATA_ILM_28_08.mat
+            
+            T_MIN_2=4.299754048611111e+04;
+            T_MAX_2=[42997.5670254630];
+            
+            %         Interpolation_DATA=Interpolation_DATA_ILM_28_08;
+            intervalle_temps=1/24/60; %1 mesure toute les minutes
+            %T_interp=(floor(T_MIN):intervalle_temps:floor(T_MAX+1))';
+            T_interp=(T_MIN_2:intervalle_temps:T_MAX_2)';
+            
+            DATA_interp_R=zeros(length(Interpolation_DATA),length(T_interp));
+            erreur_interp_R=zeros(length(Interpolation_DATA),1);
+            for i=1:length(Interpolation_DATA)
+                clear Interpolation_DATA_2
+                if isempty(Interpolation_DATA{1,i})==0
+                    Interpolation_DATA_2=unique(Interpolation_DATA{1,i}(:,1),'rows');
+                    for j=1:length(Interpolation_DATA_2)
+                        trouve=find(Interpolation_DATA{1,i}(:,1)==Interpolation_DATA_2(j,1));
+                        Interpolation_DATA_2(j,2)=Interpolation_DATA{1,i}(trouve(1,1),2);
+                    end
+                    R_Interp=interp1(Interpolation_DATA_2(:,1),Interpolation_DATA_2(:,2),T_interp);
+                    
+                    DATA_interp_R(i,:)=R_Interp';
+                    
+                    figure('Color', [ 1 1 1])
+                    plot(CONFIG_FOCUS{1,i}(:,1),CONFIG_FOCUS{1,i}(:,9),'.k','MarkerSize',25)
+                    hold on
+                    title(['Configuration n°',num2str(i)],'FontSize',16)
+                    
+                    plot(T_interp(:,1),DATA_interp_R(i,:)','or--')
+                    ylabel({'Resistance mesurée avec ABEM';'(Ohm)'},'FontSize',14)
+                    %     yyaxis right
+                    %     plot(ARROSAGE(:,1),ARROSAGE(:,2),'.--','LineWidth',2,'MarkerSize',10)
+                    %     ylabel({'Arrosage de la halde';'(Nb de passage par heure)'},'FontSize',14)
+                    %     yyaxis left
+                    grid
+                    title(['Configuration n°',num2str(i),' : C1 = ',num2str(CONFIG_FOCUS{1,i}(1,2)),' ; C2 = ',num2str(CONFIG_FOCUS{1,i}(1,3)),' ; P1 = ',num2str(CONFIG_FOCUS{1,i}(1,4)),' ; P2 = ',num2str(CONFIG_FOCUS{1,i}(1,5))],'FontSize',16)
+                    xlabel({['Date (format : ',format,')']},'FontSize',14)
+                    grid minor
+                    ax = gca;
+                    ax.XTick=[pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps))];
+                    ax.XTickLabel =[datestr(pas_de_temps*unique(round(CONFIG_FOCUS{1,i}(:,1)/pas_de_temps)),format)];
+                    grid minor
+                end
+            end
+            DATA_interp_R_1=[CONFIG_TOT,DATA_interp_R];
+            A=double(isnan(DATA_interp_R_1(:,5:end)));
+            for i=1:length(A(:,1))
+                ligne_morte(i)=min(A(i,:));
+            end
+            ligne_morte_2=find(ligne_morte==1);
+            DATA_interp_R_1(ligne_morte_2,:)=[];
+        end
+    end
+    
+    %% Rédaction du document time-lapse pour inversion
+    actif=0;
+    for o=1
+        if actif==1
+            garde=0;
+            for i=1:length(DATA_interp_R_1(1,:))
+                trouve=isnan(DATA_interp_R_1(:,i));
+                trouve_2=find(trouve(:,1)==1);
+                if isempty(trouve_2)
+                    garde(end+1,1)=i;
+                end
+            end
+            garde(1,:)=[];
+            DATA_interp_R_2=DATA_interp_R_1(:,garde');
+            T_interp_2=T_interp(garde(5:end)-4,:);
+            
+            elimination=find(DATA_interp_R_2(:,5)==0);
+            DATA_interp_R_2(elimination,:)=[];
+            
+            
+            % Rédaction des SRV files
+            load SRV_elec.mat;
+            for i=1:length(T_interp_2)
+                Name_Survey=['Colonne_4D_',num2str(i)];
+                fileID = fopen([Name_Survey,'.srv'],'w');
+                fprintf(fileID,'32 \r\n');
+                for j=2:length(SRV_elec)
+                    fprintf(fileID,'%6d %6.8f %6.8f %6.8f %6d \r\n',SRV_elec(j,:));
+                end
+                fprintf(fileID,'%6d \r\n',length(DATA_interp_R_2(:,1)));
+                for j=1:length(DATA_interp_R_2(:,1))
+                    ligne=[j,DATA_interp_R_2(j,1:4),DATA_interp_R_2(j,i+4),5];
+                    fprintf(fileID,'%6d %6d %6d %6d %6d %6.8f %6.8f \r\n',ligne);
+                end
+                fclose(fileID);
+            end
+            
+            
+            % Conversion du temps en h (différentiel)
+            T_min_2=min(T_interp_2);
+            T_interp_2_h=T_interp_2-T_min_2;
+            T_interp_2_h=T_interp_2_h*24;
+            
+            % Rédaction du time_lapse_survey_list
+            Name_survey_list=['time_lapse_survey_list_',num2str(T_min_2)];
+            fileID = fopen([Name_survey_list,'.txt'],'w');
+            fprintf(fileID,'%6d \r\n',length(T_interp_2(:,1)));
+            for i=1:length(T_interp_2(:,1))
+                fprintf(fileID,'%s %d \r\n',['Colonne_4D_',num2str(i),'.srv'],round(T_interp_2_h(i),2));
+            end
+            
+            % Rédaction du fichier de commande pour concaténation du .exo
+            T_interp_2_h=round(T_interp_2_h(:),2);
+            fileID = fopen(['Concatenation_exo_',num2str(intervalle_temps),'h.txt'],'w');
+            fprintf(fileID,'%s \r\n',['bx3d -f Colonne_4D.1 tl_sig',num2str(T_interp_2_h(1)),'.000 Colonne_4D_timelapse.exo 1']);
+            Results_name{1}=['tl_sig',num2str(T_interp_2_h(1)),'.000'];
+            for i=2:length(T_interp_2(:,1))
+                if round(T_interp_2_h(i),0)~=T_interp_2_h(i)
+                    fprintf(fileID,'%s \r\n',['bx3d -af Colonne_4D.1 tl_sig',num2str(round(T_interp_2_h(i),1)),'00 Colonne_4D_timelapse.exo ',num2str(i)]);
+                else
+                    fprintf(fileID,'%s \r\n',['bx3d -af Colonne_4D.1 tl_sig',num2str(round(T_interp_2_h(i),1)),'.000 Colonne_4D_timelapse.exo ',num2str(i)]);
+                end
+                Results_name{i}=['tl_sig',num2str(T_interp_2_h(i)),'.000'];
+            end
+        end
+    end
+    
+    %% FIGURE RESIST = f (VWC, RESISTW)
+    for o=1
+        p = get(gcf,'Position');
+        set(0,'DefaultFigurePosition',p);
+        close all
+        load Anorth_35.mat
+        load Sable_36.mat
+        load Ilmenite_48.mat
+        anortho=0;
+        sable=1;
+        ilmenite=0;
+        
+        % C_sable=[255/255 192/255 0/255];
+        % C_anorthosite=[125/255 121/255 121/255];
+        % C_ilmenite=[59/255 56/255 56/255];
+        
+        C_sable='k';
+        C_anorthosite='k';
+        C_ilmenite='k';
+        
+        figure('Color', [ 1 1 1])
+        % EAU
+        loglog([1 1000],[1 1000],'r-','LineWidth',2)
+        hold on
+        
+        % ANORTHOSITE
+        for o=1
+            if anortho==1
+                % Anortho 35
+                loglog([1 1000],[6 5500],'--b','LineWidth',2,'color',C_anorthosite)
+                loglog(Anorth_35(:,1),Anorth_35(:,2),'^','MarkerSize',7,'LineWidth',2,'color',C_anorthosite)
+                h=text(1.2,6.2,'VWC = 35 %','FontSize',12,'FontWeight','bold','color',C_anorthosite);
+                set(h,'Rotation',21);
+                % Anortho 20
+                loglog([1 1000],[11 10000],'--','LineWidth',1.5,'color',C_anorthosite)
+                loglog(30.85,320,'^','MarkerSize',7,'LineWidth',2,'color',C_anorthosite)
+                h=text(1.2,11.8,'VWC = 20 %','FontSize',12,'FontWeight','bold','color',C_anorthosite);
+                set(h,'Rotation',21);
+                % Anortho 15
+                loglog([1 500],[23 10000],'--','LineWidth',1,'color',C_anorthosite)
+                loglog(30.8499151,650,'^','MarkerSize',7,'LineWidth',2,'color',C_anorthosite)
+                h=text(1.2,24,'VWC = 15 %','FontSize',12,'FontWeight','bold','color',C_anorthosite);
+                set(h,'Rotation',21);
+                % Anortho 10
+                loglog([1 165],[75 10000],'--','LineWidth',0.5,'color',C_anorthosite)
+                loglog(30.85,2000,'^','MarkerSize',7,'LineWidth',2,'color',C_anorthosite)
+                h=text(1.2,79,'VWC = 10 %','FontSize',12,'FontWeight','bold','color',C_anorthosite);
+                set(h,'Rotation',21);
+            end
+        end
+        
+        % SABLE
+        for o=1
+            if sable==1
+                % Sable 36
+                loglog([1 66.7 166.7 500 1000],[3.8 255 511 930 1200],'--','LineWidth',2,'Color',C_sable)
+                loglog(Sable_36(:,1),Sable_36(:,2),'v','MarkerSize',7,'LineWidth',2,'Color',C_sable)
+                h=text(1.9,6.2,'VWC = 36 %','Color',C_sable,'FontSize',12,'FontWeight','bold');
+                set(h,'Rotation',21);
+                % Sable 30
+                loglog([1 66.7 166.7 500 1000],[10.5 660 1250 2100 2500],'--','LineWidth',1.5,'Color',C_sable)
+                loglog(45,455,'v','MarkerSize',7,'LineWidth',2,'Color',C_sable)
+                h=text(1.9,17,'VWC = 30 %','Color',C_sable,'FontSize',12,'FontWeight','bold');
+                set(h,'Rotation',21);
+                % Sable 24
+                loglog([1 66.7 166.7 500 1000],[33 2100 3500 5000 5200],'--','LineWidth',1,'Color',C_sable)
+                loglog(45,1430,'v','MarkerSize',7,'LineWidth',2,'Color',C_sable)
+                h=text(1.9,54,'VWC = 24 %','Color',C_sable,'FontSize',12,'FontWeight','bold');
+                set(h,'Rotation',21);
+            end
+        end
+        
+        % ILMENITE
+        for o=1
+            if ilmenite==1
+                % Ilmenite 48
+                loglog([1 109 1000],[6.9 120 300],'--','LineWidth',2,'Color',C_ilmenite)
+                loglog(Ilmenite_48(:,1),Ilmenite_48(:,2),'>','MarkerSize',7,'LineWidth',2,'Color',C_ilmenite)
+                h=text(3.1,12,'VWC = 48 %','FontSize',12,'FontWeight','bold','Color',C_ilmenite);
+                set(h,'Rotation',13);
+                % Ilmenite 40
+                loglog([1 25 135 1000],[10 76 200 480],'--','LineWidth',1.5,'Color',C_ilmenite)
+                loglog([1.34 25 417],[12 76 320],'>','MarkerSize',7,'LineWidth',2,'Color',C_ilmenite)
+                h=text(3.1,18,'VWC = 40 %','FontSize',12,'FontWeight','bold','Color',C_ilmenite);
+                set(h,'Rotation',13);
+                % Ilmenite 34
+                loglog([1 25 135 1000],[16 125 330 700],'--','LineWidth',1,'Color',C_ilmenite)
+                loglog([1.34 25 417],[19 125 500],'>','MarkerSize',7,'LineWidth',2,'Color',C_ilmenite)
+                h=text(3.1,29,'VWC = 34 %','FontSize',12,'FontWeight','bold','Color',C_ilmenite);
+                set(h,'Rotation',13);
+            end
+        end
+        
+        ylim([1 10000])
+        grid on
+        grid minor
+        
+        xlabel({'Résistivité électrique du fluide intersticiel','(Ohms.m)'},'FontSize',14,'FontWeight','bold')
+        ylabel({'Résistivité électrique mesurée dans la colonne','(Ohms.m)'},'FontSize',14,'FontWeight','bold')
+        title('Influence de la résistivité du fluide intersticiel et de la teneur en eau sur les mesures de résistivité dans la colonne sable','FontSize',16,'FontWeight','bold' )
+    end
+end

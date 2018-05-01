@@ -19,7 +19,7 @@
 
 ## 0.1) Rotation des donneés brutes
 Creation le 17/11/2016
- 
+
 actif=0;
 for o=1:1 % non utilisé : Rotation des données
     if actif==1

@@ -25,7 +25,7 @@ Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more
 - 09- 3D-time-lapse-ERT-monitoring (5220 lines)
 
 -> Laboratory measurements
-- 10- Laboratory-column-measurements-toolbox (716 lines)
+- 10- Laboratory-column-measurements-toolbox (4039 lines)
 
 
 
@@ -56,7 +56,7 @@ This Matlab code was used to load surveying data to create a complex 3D model fo
 ## 09- 3D-time-lapse-ERT-monitoring (5220 lines)
 This Matlab code was designed to process inversion results (E4D) of the 3D time-lapse geoelectrical monitoring of an experimental waste rock pile. Part I loads geoelectrical database from Excel files and pre-processes the measures. Files of data are created to be inversed with E4D (Johnson, 2010). Part II loads inversion files and post-processes the geophysical images of the waste rock pile overt time in 3D. 1D, 2D, 3D and 4D images are generated from the inversion and geoelectrical data are compared to hydrogeophysical measurements.
 
-## 10- Laboratory-column-measurements-toolbox (716 lines)
+## 10- Laboratory-column-measurements-toolbox (4039 lines)
 This Matlab code was used to carry laboratory column measurements with rock samples from the experimental waste rock pile (sand, ilmenite and anorthosite waste rocks). ERT monitoring of the column was used to recover the relationship between bulk electrical resistivity, water electrical resistivity and moisture content. These empirical relationships are then used to calculate the moisture content distribution in the waste rock pile from bulk electrical resistivity monitoring.
 
 

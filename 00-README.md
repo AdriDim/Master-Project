@@ -1,7 +1,6 @@
 # Master-Project | Adrien-Dimech | Hydrogeophysics
 ----------------------------------------------------------------------------------------------------------------------------------------
 Matlab codes to prepare - process - visualize and interpret 3D time-lapse geolelectrical monitoring of a waste rock pile.
-
 Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more information about my research or contact me for more information and data files : adrien.dimech@gmail.com
 ----------------------------------------------------------------------------------------------------------------------------------------
 

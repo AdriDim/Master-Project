@@ -66,7 +66,7 @@ This Matlab code was designed to process inversion results (E4D) of the 3D time-
 
 ### V. Laboratory measurements
 
-#### 10- Laboratory column measurements toolbox (4039 lines)
+#### 10- Laboratory column measurement toolbox (4039 lines)
 This Matlab code was used to carry laboratory column measurements with rock samples from the experimental waste rock pile (sand, ilmenite and anorthosite waste rocks). ERT monitoring of the column was used to recover the relationship between bulk electrical resistivity, water electrical resistivity and moisture content. These empirical relationships are then used to calculate the moisture content distribution in the waste rock pile from bulk electrical resistivity monitoring.
 
 

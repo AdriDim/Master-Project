@@ -66,6 +66,8 @@ This Matlab code was used to select optimized protocols for any Electrical Resis
 #### 07- Hydrogeological database processing (988 lines)
 This Matlab code was used to load and process the hydrogeological database measured in the experimental waste rock pile. Both GS3 and MPS sensors are used (Decagon Devices) to monitor water content, temperature, resistivity and suction in the waste rock. Precipitation data are also processed. This code provide useful tools to handle complexe database and to visualize different datasets. Hydrogeological data are then used as a validation of geoelectrical results.
 
+-> https://github.com/Adrien-Dimech/Master-Project/blob/master/07-Hydrogeological-database-processing.m
+
 #### 08- 3D modeling of the pile for E4D (694 lines)
 This Matlab code was used to load surveying data to create a complex 3D model for the inversion software E4D (Johnson, 2010). The 3D tetrahedron mesh is generated with Tetgen. This code provides 3D visualization of the different geometries and structure you wish to model with Tetgen and helps verifying the consistency of the model to find meshes errors for instance. Some useful tools are also provided to complement and interpolate surveying datasets. 
 

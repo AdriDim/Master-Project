@@ -27,6 +27,7 @@ Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more
 
 #### V. Laboratory measurements
 - 10- Laboratory column measurements toolbox (4039 lines)
+- 11- Imaging desaturation of tailings in column (with Karine Sylvain) -> in developpement
 
 
 
@@ -98,6 +99,7 @@ This Matlab code was used to carry laboratory column measurements with rock samp
 
 -> https://github.com/Adrien-Dimech/Master-Project/blob/master/10-Laboratory-column-measurements-toolbox.m
 
-
+#### 11- Imaging desaturation of tailings in column (with Karine Sylvain) -> in developpement
+This Matlab code is used to carry laboratory column measurements to image desaturation of tailings in an instrumented laboratory column. ERT monitoring of the column is used to recover the relationship between bulk electrical resistivity, water electrical resistivity and moisture content. We try to develop a quantitative approach to link the 3D geophysical images of the bulk electrical resistivity and the moisture content in the tailings. This work is developped in close collaboration with hydrogeologists (Karine Sylvain) at Polytechnique Montréal. (Work in progress)
 
 

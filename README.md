@@ -1,4 +1,4 @@
-# Master Project | Adrien Dimech | Hydrogeophysics
+# Hydrogeophysics Toolbox | Adrien Dimech | Hydrogeophysics
 
 Matlab codes to prepare - process - visualize and interpret 3D time-lapse geolelectrical monitoring of a waste rock pile.
 
@@ -15,6 +15,7 @@ Feel free to visit : https://www.researchgate.net/profile/Adrien_Dimech for more
 #### II. Static measurements (2016)
 - 03- 3D geoelectrical database to RES2D\3DINV (638 lines)
 - 04- 3D visualization of RES3DINV inversion results (293 lines)
+- ii- Forward and Inversion toolbox with RES2DMOD/INV and E4D -> in developpement
 
 #### III. Time lapse measurements (2017)
 - 05- Optimized protocols for 3D geoelectrical monitoring (1278 lines)
